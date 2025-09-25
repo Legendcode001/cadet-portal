@@ -5,238 +5,386 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - 3rd Brigade Headquarters</title>
-    <link rel="stylesheet" href="gallery.css">
-    <link rel=" icon" href="./img/cadetlogo_prev_ui.png" type="image/png">
-    <link rel=" icon" href="favicon-16x16.png" sizes="16x16" type="image/png">
-    <link rel=" icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
-    <link rel=" icon" href="favicon-64x64.png" sizes="64x64" type="image/png">
+    <!-- Add this to your head for Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="./img/cadetlogo_prev_ui.png" type="image/png">
+    <!-- Using a custom font for a more professional look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #1b2d1b, #3a5a40, #2d4739);
-            background-size: 200px;
-            background-attachment: fixed;
-            color: #fff;
-            font-family: "Inter", system-ui, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
-        header {
-            background-color: #004d40;
-            color: white;
-            padding: 15px;
-            text-align: center;
+        /* Custom styles for the scrollbar to match the dark theme */
+        ::-webkit-scrollbar {
+            width: 10px;
         }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
         }
 
-        h1 {
-            margin: 0;
-        }
-
-        .gallery-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            /* Make images small */
-            gap: 10px;
-            padding: 20px;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            /* Changes the cursor to pointer */
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.3s;
+        ::-webkit-scrollbar-thumb {
+            background-color: #4a5568;
             border-radius: 5px;
-            /* Slight rounding for better aesthetics */
+            border: 2px solid #2d3748;
         }
 
-        .gallery-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .gallery-item p {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            /* Hidden by default */
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9);
-            padding-top: 60px;
-        }
-
+        /* Modal content animation */
         .modal-content {
-            margin: auto;
-            display: block;
-            width: 80%;
-            max-width: 700px;
-            border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease-in-out;
-            /* Smooth transition */
+            animation-name: zoom;
+            animation-duration: 0.6s;
         }
 
-        .modal-content:hover {
-            transform: scale(1.05);
-            /* Slightly enlarge on hover */
+        @keyframes zoom {
+            from {
+                transform: scale(0.1)
+            }
+
+            to {
+                transform: scale(1)
+            }
         }
 
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 25px;
-            color: white;
-            font-size: 35px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        #caption {
-            text-align: center;
-            color: white;
-            padding: 10px;
-            font-size: 20px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 250px;
-            background-color: #333;
-            color: white;
-            position: relative;
-            bottom: 0;
-            width: 100%;
+        /* Active button styles */
+        .active-gallery {
+            background-color: #1a202c !important;
+            /* Tailwind's gray-900 */
+            border: 1px solid #4a5568;
+            /* Tailwind's gray-600 */
+            color: #ffffff;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
 
-    <header>
-        <h1>Training Gallery</h1>
-        <br>
-        <nav>
-            <a href="index.html">Home</a>
-        </nav>
+    <!-- Header Section -->
+    <header class="bg-gray-800 shadow-lg py-6 px-4">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-3xl font-bold tracking-tight">3BRIGADE - PHOTO GALLERY</h1>
+            <nav class="mt-4 sm:mt-0 space-x-4">
+                <a href="index.html"
+                    class="text-gray-300 hover:text-white transition-colors duration-300 font-medium">Home</a>
+            </nav>
+        </div>
     </header>
 
-    <main>
-        <div class="gallery-container">
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/About.jpg" alt="Training Session 1">
-                <p>Senior Man</p>
+    <main class="flex-grow container mx-auto p-6">
+        <!-- Gallery Navigation Section -->
+        <section class="text-center mb-8">
+            <h2 class="text-2xl font-semibold text-gray-300 mb-4">Explore Past Galleries</h2>
+            <!-- Year Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-6" id="year-nav">
+                <button id="btn-2025" onclick="changeGallery('2025')"
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2025</button>
+                <button id="btn-2024" onclick="changeGallery('2024')"
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2024</button>
+                <button id="btn-2023" onclick="changeGallery('2023')"
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2023</button>
+                <button id="btn-2022" onclick="changeGallery('2022')"
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2022</button>
+                <button id="btn-2021" onclick="changeGallery('2021')"
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2021</button>
+                <button id="btn-2020" onclick="changeGallery('2020')"
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2020</button>
             </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/morning J.jpg" alt="Training Session 2">
-                <p>Morning Jogging 2</p>
+            <!-- Category Buttons (Dynamically populated) -->
+            <div id="category-nav" class="flex flex-wrap justify-center gap-4">
+                <!-- Buttons for categories will be added here by JavaScript -->
             </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/morning 1.jpg" alt="Training Session 3">
-                <p>Morning Jogging 3</p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/morning jj.jpg" alt="Training Session 4">
-                <p>Morning Jogging 4</p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/morning jjj.jpg" alt="Training Session 5">
-                <p>Morning Jogging 5</p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/morning jjjj.jpg" alt="Training Session 6">
-                <p>Lecture </p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/lecture.jpg" alt="Training Session 7">
-                <p>Lecture 2</p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/lecture 1.jpg" alt="Training Session 8">
-                <p>Lecture 3</p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/lecture 2.jpg" alt="Training Session 9">
-                <p>Lecture 4</p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/lecture 3.jpg" alt="Training Session 10">
-                <p>Drifting</p>
-            </div>
-            <div class="gallery-item" onclick="openModal(this)">
-                <img src="./img/Drift.jpg" alt="Training Session 11">
-                <p>Training Session 11</p>
-            </div>
-        </div>
+        </section>
+
+        <!-- Image Gallery Grid -->
+        <section id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Dynamic gallery content will be inserted here by JavaScript -->
+        </section>
     </main>
 
     <!-- Modal Structure -->
-    <div id="myModal" class="modal">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="img01">
-        <div id="caption"></div>
+    <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 hidden">
+        <div class="relative max-w-5xl mx-auto p-4">
+            <!-- Close button for the modal -->
+            <span class="absolute top-2 right-4 text-white text-4xl font-light cursor-pointer hover:text-gray-300"
+                onclick="closeModal()">&times;</span>
+            <img class="w-full max-h-[80vh] rounded-lg shadow-2xl object-contain" id="modalImage"
+                alt="Enlarged gallery image">
+            <div id="modalCaption" class="text-center mt-4 text-gray-300 text-lg font-medium"></div>
+        </div>
     </div>
-    <br>
-    <br>
-    <footer>
-        <p>&copy; 2024 3rd Brigade Headquarters. All Rights Reserved.</p>
-        <div>
-            <a href="https://www.facebook.com" target="_blank" style="color: white;">Facebook</a> |
-            <a href="https://www.instagram.com" target="_blank" style="color: white;">Instagram</a> |
-            <a href="https://www.tiktok.com" target="_blank" style="color: white;">TikTok</a>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 shadow-inner py-6 text-center mt-auto">
+        <div class="container mx-auto text-sm text-gray-400">
+            <p>&copy; 2025 3rd Brigade Headquarters. All Rights Reserved.</p>
+            <div class="mt-2 space-x-4">
+                <a href="https://www.facebook.com" target="_blank"
+                    class="hover:text-white transition-colors duration-300">Facebook</a> |
+                <a href="https://www.instagram.com" target="_blank"
+                    class="hover:text-white transition-colors duration-300">Instagram</a> |
+                <a href="https://www.tiktok.com" target="_blank"
+                    class="hover:text-white transition-colors duration-300">TikTok</a>
+            </div>
         </div>
     </footer>
 
+    <!-- JavaScript for the Modal -->
     <script>
-        function openModal(element) {
-            const modal = document.getElementById("myModal");
-            const modalImg = document.getElementById("img01");
-            const captionText = document.getElementById("caption");
-            modal.style.display = "block";
-            modalImg.src = element.querySelector('img').src;
-            captionText.innerHTML = element.querySelector('p').innerHTML;
+        // Data structure for the galleries, organized by year and category
+        const galleryData = {
+            '2025': {
+                'Drilling': [{
+                    caption: 'Drill Exercise',
+                    src: 'uploaded:Dril1.png-74b20ed1-6c15-46f0-9475-88a6a9d23846'
+                }, {
+                    caption: 'Cadet Drill Exercise 2',
+                    src: 'uploaded:Dril2.png-069b6978-7660-4348-b7e2-78b462226e0f'
+                }, {
+                    caption: ' Drill Exercise 3',
+                    src: 'uploaded:Dril3.png-4be7a59e-8fc0-46dc-87ec-2c66f792ce10'
+                }, {
+                    caption: 'Drill Exercise 4',
+                    src: 'uploaded:Dril4.jpg-92fa73c4-e227-405e-98ae-6bc07634749b'
+                }, {
+                    caption: 'Drill Exercise 5',
+                    src: 'uploaded:Dril5.jpeg-a22bad88-65d9-48b6-9420-a53d23256a83'
+                }, {
+                    caption: 'Morning Jogging',
+                    src: 'uploaded:jog1.png-d3b43da3-3698-43a5-8618-ede80773937a'
+                }, {
+                    caption: 'Morning Jogging2',
+                    src: 'uploaded:jog2.png-be640a3e-a0f2-401c-ab72-ac16d640cae1'
+                },],
+
+                'Camp Fire': [{
+                    caption: 'Camp Fire Session',
+                    src: 'uploaded:C1.jpg-d505a2eb-e390-47ec-a110-fc015c8d64a0'
+                }, {
+                    caption: 'Camp Fire Session2',
+                    src: 'uploaded:C2.jpg-e374960a-12c8-4d64-a045-ff2d30b3d073'
+                }, {
+                    caption: 'Camp Fire Session3',
+                    src: 'uploaded:C3.jpg-c46b0843-d4ac-4294-82dc-3f938e7a7a87'
+                }, {
+                    caption: 'Camp Fire Session4',
+                    src: 'uploaded:C4.jpg-2bdc425d-90fc-4a2b-8cae-bdfec8c0ab41'
+                }, {
+                    caption: 'Camp Fire Session5',
+                    src: 'uploaded:C5.jpg-ea520ea1-ba61-4a01-b91a-4d6856294937'
+                }, {
+                    caption: 'Strategic Planning',
+                    src: 'uploaded:S1.jpg-ae0a2831-f287-43dd-83b0-53804e338389'
+                }, {
+                    caption: 'Strategic Planning2',
+                    src: 'uploaded:S2.jpg-8dd111a4-0219-4ad4-96ab-d49957949e6a'
+                }, {
+                    caption: 'Strategic Planning3',
+                    src: 'uploaded:S3.jpg-dd40b591-7d57-4573-96fb-9a73b9fdc394'
+                }, {
+                    caption: 'Strategic Planning4',
+                    src: 'uploaded:S4.png-c616ef0b-2e1a-4211-a268-bacc1f64dee3'
+                }, {
+                    caption: 'Strategic Planning5',
+                    src: 'uploaded:S5.png-ceb84bca-a17b-4f24-9eb0-3f053fe5a5ae'
+                },],
+                'Ceremonies': [{
+                    caption: 'Annual Parade',
+                    src: 'uploaded:P1.png-e218f6f4-23d9-4533-9e2c-40f0b5b5a3e8'
+                }, {
+                    caption: 'Annual Parade2',
+                    src: 'uploaded:P2.png-beab3267-c069-41b2-95b4-b747736f25a5'
+                }, {
+                    caption: 'Annual Parade3',
+                    src: 'uploaded:P3.png-e79e271e-8753-4318-98dc-0f894952abc9'
+                }, {
+                    caption: 'Annual Parade4',
+                    src: 'uploaded:P4.jpg-1c173e28-b260-4002-822c-836a9417e929'
+                }, {
+                    caption: 'Annual Parade5',
+                    src: 'uploaded:P5p.jpg-d4724df1-c098-4a27-9307-e21da193a83e'
+                }, {
+                    caption: 'Feeding',
+                    src: 'uploaded:F1.jpg-8842e77d-a5b0-4e16-9345-6e73f47303fa'
+                },],
+            },
+
+            '2024': {
+                'Field Training': [{
+                    caption: 'Tactical Field Training',
+                    src: 'https://placehold.co/600x400/36454F/ffffff?text=2024+Field+Training'
+                }, {
+                    caption: 'Endurance Expedition',
+                    src: 'https://placehold.co/600x400/36454F/ffffff?text=2024+Expedition'
+                },],
+                'Lectures': [{
+                    caption: 'First Aid Course',
+                    src: 'https://placehold.co/600x400/404040/ffffff?text=2024+Medical'
+                },],
+            },
+
+            '2023': {
+                'Competitions': [{
+                    caption: 'Inter-Brigade Competition',
+                    src: 'https://placehold.co/600x400/404040/ffffff?text=2023+Competition'
+                },],
+                'Expeditions': [{
+                    caption: 'Orienteering Exercise',
+                    src: 'https://placehold.co/600x400/1C2833/ffffff?text=2023+Orienteering'
+                },],
+            },
+
+            '2022': {
+                'Drilling': [{
+                    caption: 'Initial Recruit Training',
+                    src: 'https://placehold.co/600x400/505050/ffffff?text=2022+Recruits'
+                },],
+                'Barracks Life': [{
+                    caption: 'Daily Barracks Life',
+                    src: 'https://placehold.co/600x400/1C2833/ffffff?text=2022+Barracks'
+                },],
+            },
+
+            '2021': {
+                'Pandemic Drills': [{
+                    caption: 'COVID-19 Drills',
+                    src: 'https://placehold.co/600x400/000000/ffffff?text=2021+Drills'
+                },],
+            },
+
+            '2020': {
+                'Recruit Training': [{
+                    caption: 'Initial Recruit Training',
+                    src: 'https://placehold.co/600x400/505050/ffffff?text=2020+Recruits'
+                },],
+                'Ceremonies': [{
+                    caption: 'Senior Man Session',
+                    src: 'https://placehold.co/600x400/505050/ffffff?text=2020+Senior+Man'
+                },],
+            },
+        };
+
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+        const galleryGrid = document.getElementById('gallery-grid');
+        const yearNav = document.getElementById('year-nav');
+        const categoryNav = document.getElementById('category-nav');
+        let currentYear = '2025';
+
+        // Function to render the category buttons for the selected year
+        function renderCategoryButtons(year) {
+            categoryNav.innerHTML = ''; // Clear old buttons
+            const categories = galleryData[year];
+            if (!categories) {
+                return;
+            }
+
+            // Add 'All' button to show all images for the year
+            const allBtn = document.createElement('button');
+            allBtn.textContent = 'All';
+            allBtn.id = `btn-all-${year}`;
+            allBtn.className = 'px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md active-gallery';
+            allBtn.onclick = () => renderCategory(year, 'all');
+            categoryNav.appendChild(allBtn);
+
+            for (const category in categories) {
+                const btn = document.createElement('button');
+                btn.textContent = category;
+                btn.id = `btn-${year}-${category.toLowerCase().replace(/\s/g, '-')}`;
+                btn.className = 'px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md';
+                btn.onclick = () => renderCategory(year, category);
+                categoryNav.appendChild(btn);
+            }
         }
 
-        function closeModal() {
-            const modal = document.getElementById("myModal");
-            modal.style.display = "none";
+        // This helper function creates the image element and correctly handles the image URL
+        function createImageElement(image) {
+            const item = document.createElement('div');
+            item.className = 'relative group cursor-pointer overflow-hidden rounded-lg shadow-xl';
+            item.setAttribute('onclick', 'openModal(this)');
+
+            // We must convert the 'uploaded:' URL into a usable path
+           let imageUrl = image.src;
+    if (imageUrl.startsWith('uploaded:')) {
+        const fileName = imageUrl.substring('uploaded:'.length).split('-')[0];
+        imageUrl = 'img/' + fileName;
+    }
+
+            item.innerHTML = `
+                <img src="${imageUrl}" alt="${image.caption}" class="w-full h-auto transform group-hover:scale-110 transition-transform duration-500 rounded-lg">
+                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gray-900 bg-opacity-70 group-hover:bg-opacity-80 transition-opacity duration-300">
+                    <p class="text-xs sm:text-sm font-semibold text-gray-200">${image.caption}</p>
+                </div>
+            `;
+            return item;
         }
+
+        // Function to render images for a specific category
+        function renderCategory(year, category) {
+            galleryGrid.innerHTML = '';
+
+            // Remove active state from all category buttons
+            const categoryButtons = categoryNav.querySelectorAll('button');
+            categoryButtons.forEach(btn => btn.classList.remove('active-gallery'));
+
+            let imagesToDisplay = [];
+            if (category === 'all') {
+                for (const cat in galleryData[year]) {
+                    imagesToDisplay = imagesToDisplay.concat(galleryData[year][cat]);
+                }
+                document.getElementById(`btn-all-${year}`).classList.add('active-gallery');
+            } else {
+                imagesToDisplay = galleryData[year][category];
+                document.getElementById(`btn-${year}-${category.toLowerCase().replace(/\s/g, '-')}`).classList.add('active-gallery');
+            }
+
+            if (!imagesToDisplay || imagesToDisplay.length === 0) {
+                galleryGrid.innerHTML = '<p class="text-center text-gray-400 text-lg col-span-full">No content available for this category.</p>';
+                return;
+            }
+
+            imagesToDisplay.forEach(image => {
+                const item = createImageElement(image);
+                galleryGrid.appendChild(item);
+            });
+        }
+
+        // Function to handle year button clicks
+        function changeGallery(year) {
+            currentYear = year;
+            // Remove active state from all year buttons
+            const yearButtons = yearNav.querySelectorAll('button');
+            yearButtons.forEach(btn => btn.classList.remove('active-gallery'));
+
+            // Add active state to the clicked year button
+            document.getElementById(`btn-${year}`).classList.add('active-gallery');
+
+            // Render the category buttons for the selected year and then render the 'All' category
+            renderCategoryButtons(year);
+            renderCategory(year, 'all');
+        }
+
+        // Function to open the modal
+        function openModal(element) {
+            const image = element.querySelector('img');
+            const caption = element.querySelector('p');
+            modalImage.src = image.src;
+            modalImage.alt = image.alt;
+            modalCaption.textContent = caption.textContent;
+            imageModal.classList.remove('hidden');
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            imageModal.classList.add('hidden');
+        }
+
+        // Initial load: show the 2025 gallery when the page first opens
+        document.addEventListener('DOMContentLoaded', () => {
+            changeGallery('2025');
+        });
     </script>
 
 </body>
