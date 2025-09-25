@@ -1,0 +1,549 @@
+body {
+    font-family: 'Playfair Display', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #eaeaea;
+    /* Light grey background */
+    transition: background-color 0.5s ease;
+}
+
+header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+/* Logo styling */
+.logo {
+    position: fixed;
+    /* Position it to the very start of the page */
+    top: 25px;
+    /* Adjust the top margin if needed */
+    left: 2px;
+    /* Adjust the left margin to keep it at the start */
+}
+
+.logo img {
+    width: 60px;
+    /* Adjust the width of the logo */
+    height: auto;
+    /* Maintain the aspect ratio */
+}
+
+/* Position second logo on right */
+.logo-right {
+    position: fixed;
+    top: 25px;
+    right: auto;
+    margin-left: 87%;
+}
+
+.logo-right img {
+    width: 85px;
+    height: auto;
+}
+
+h1:hover {
+    filter: blur(2px);
+    /* Blur effect on hover */
+    color: #FFD700;
+    /* Change color on hover for contrast */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Navigation styling */
+nav {
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+    padding: 15px 0;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 10px;
+    padding: 10px 0;
+    transition: color 0.3s ease;
+}
+
+/* Fancy underline effect */
+.nav-links li a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    /* Thickness of the underline */
+    bottom: -5px;
+    /* Distance from the text */
+    left: 0;
+    background-color: #ff7e5f;
+    /* Color of underline */
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    /* Smooth transition */
+}
+
+.nav-links li a:hover::after {
+    transform: scaleX(1);
+    /* Scale the underline on hover */
+}
+
+/* Responsive design for smaller screens */
+@media screen and (max-width: 768px) {
+    .videoWrapper {
+        width: 90%;
+        padding-top: 56.25%;
+    }
+
+    .hero-text {
+        font-size: 1.8rem;
+        /* Smaller text on mobile */
+        top: 5%;
+        /* Move text up */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    nav {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-links li a {
+        font-size: 16px;
+    }
+}
+
+#hero {
+    display: flex;
+    justify-content: flex-end;
+    /* Aligns the video to the right */
+    align-items: center;
+    height: 100vh;
+    /* Full height of the viewport */
+    background-color: #4B5320;
+    /* Navy background for contrast */
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.videoWrapper {
+    width: 50%;
+    /* Adjust the width as needed */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    /* X-offset, Y-offset, Blur radius, Color */
+    overflow: hidden;
+    /* Ensures corners are rounded */
+}
+
+.videoWrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.hero-text {
+    position: absolute;
+    top: 20%;
+    /* Adjust the positioning */
+    left: 5%;
+    color: white;
+    text-align: left;
+    font-size: 2.5rem;
+    /* Bigger font size for main text */
+    transition: transform 0.5s ease;
+    animation: slideIn 1s ease forwards;
+    /* Slide in animation */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.btn {
+    padding: 15px 30px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1.5rem;
+    /* Bigger button text */
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #4B5320;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+footer a {
+    color: #5cb85c;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.image-container img {
+    width: 300px;
+    height: auto;
+    margin: 0 10px;
+    border-radius: 5px;
+    transition: transform 0.3s;
+}
+
+.image-container img:hover {
+    transform: scale(1.05);
+}
+
+/* Additional styles for larger text sections */
+.big-text {
+    font-size: 4rem;
+    /* Large text size */
+    text-align: center;
+    color: #4B5320;
+    /* Navy color */
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.fancy-bg {
+    background-image: url('https://your-army-image-url.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 150px 0;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.content-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    /* Dark transparent background */
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+.big-text {
+    font-size: 4.5em;
+    /* Increased size for better impact */
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+    margin-bottom: 40px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.mission-text {
+    font-size: 1.8em;
+    /* Increased for more prominence */
+    line-height: 1.6;
+    margin-bottom: 50px;
+    font-weight: 300;
+    animation: fadeInUp 1.5s ease-in-out;
+}
+
+.quote-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 1.8s ease-in-out;
+}
+
+blockquote {
+    font-size: 2em;
+    /* Larger and more striking */
+    font-style: italic;
+    color: #f1f1f1;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+cite {
+    display: block;
+    margin-top: 15px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #f1f1f1;
+    text-align: right;
+}
+
+/* Animation Effects */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+/* Button Style */
+.btn {
+    padding: 10px 20px;
+    /* Padding for button */
+    background-color: #5cb85c;
+    /* Green background */
+    color: white;
+    /* White text */
+    border: none;
+    /* No border */
+    border-radius: 5px;
+    /* Rounded corners */
+    text-decoration: none;
+    /* Remove underline */
+}
+
+/* Footer Style */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    margin: 5px 10px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.footer-links div {
+    margin: 0 15px;
+}
+
+footer {
+    text-align: center;
+    /* Centered text in footer */
+    padding: 20px;
+    /* Padding */
+    background-color: #333;
+    /* Dark background for footer */
+    color: white;
+    /* White text */
+}
+
+/* Form Styles */
+form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    /* Dark transparent background */
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+form label {
+    color: white;
+    display: block;
+    /* Block display for labels */
+    margin: 10px 0 5px;
+    /* Margin for spacing */
+}
+
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+select,
+textarea,
+input[type="file"] {
+    font-size: 20px;
+    color: #4B5320;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+
+form input,
+form textarea,
+form select {
+    width: 100%;
+    /* Full width inputs */
+    padding: 10px;
+    /* Padding */
+    margin-bottom: 10px;
+    /* Spacing */
+    border: 1px solid #ccc;
+    /* Light grey border */
+    border-radius: 5px;
+    /* Rounded corners */
+}
+
+/* Button in Form */
+form button {
+    text-align: center;
+    padding: 10px 20px;
+    /* Button padding */
+    background-color: #5cb85c;
+    /* Green background */
+    color: white;
+    /* White text */
+    border: none;
+    /* No border */
+    border-radius: 5px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Pointer cursor */
+    margin: 20px 0;
+    /* Margin for spacing */
+    font-size: 16px;
+    /* Font size */
+    transition: background-color 0.3s;
+    /* Smooth background color change */
+}
+
+form button:hover {
+    background-color: #1c12a3;
+    /* Darker green on hover */
+}
+
+/* Additional styling for the reCAPTCHA */
+.g-recaptcha {
+    margin: 20px 0;
+    /* Margin for spacing */
+}
+
+textarea[readonly] {
+    background-color: #f0f0f0;
+}
+
+/* Shake Animation */
+.shake {
+    animation: shake 0.5s;
+    /* Animation class for shake effect */
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    /* Start and end at original position */
+    25% {
+        transform: translateX(-5px);
+    }
+
+    /* Move left */
+    50% {
+        transform: translateX(5px);
+    }
+
+    /* Move right */
+    75% {
+        transform: translateX(-5px);
+    }
+
+    /* Move left again */
+}

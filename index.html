@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Playfair+Display&family=Roboto&display=swap"
+        rel="stylesheet">
+    <link rel=" icon" href="./img/cadetlogo_prev_ui.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for professional icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 🔥 Full-screen loader styles */
+        /* Full-page loader background */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            /* Hide by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        /* Your custom image styling */
+        .loader-icon {
+            width: 200px;
+            /* Adjust size */
+            height: auto;
+            animation: spin 3s linear infinite;
+            /* Add animation */
+        }
+
+        .new {
+            font-size: 13px;
+        }
+
+        /* Spin animation */
+        @keyframes spin {
+            100% {
+                transform: rotate(300deg);
+            }
+        }
+
+        /* Cool and professional links section */
+        .quick-links-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1px;
+        }
+
+        .quick-link-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a202c;
+            /* Dark background */
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .quick-link-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .quick-link-item .icon {
+            font-size: 2rem;
+            color: #4a90e2;
+            /* Accent color */
+        }
+
+        .quick-link-item a {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+
+    <script>
+        function shakeText(element) {
+            element.classList.add('shake');
+            setTimeout(() => {
+                element.classList.remove('shake');
+            }, 1000);
+        }
+
+        function fadeInText(element) {
+            element.style.opacity = 0;
+            let opacity = 0;
+            const interval = setInterval(() => {
+                if (opacity >= 1) {
+                    clearInterval(interval);
+                }
+                opacity += 0.05;
+                element.style.opacity = opacity;
+            }, 50);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const textToShake = document.getElementById('shake-text');
+            shakeText(textToShake);
+            fadeInText(textToShake);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('page-loader');
+            if (!loader) console.warn('No #page-loader element found (create one under <body>)');
+
+            // Helper: ignore mailto, tel, pure hashes or javascript: links
+            function shouldIgnoreHref(href) {
+                if (!href) return true;
+                href = href.trim();
+                return href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || href.startsWith('javascript:');
+            }
+
+            // Get all nav links that look like real internal pages
+            const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter(a => !shouldIgnoreHref(a.getAttribute('href')));
+            console.log('Loader: nav links found ->', navLinks.length);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // allow open-in-new-tab or modifier keys
+                    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+                    // Prevent navigation, show loader, then navigate
+                    e.preventDefault();
+
+                    // Make sure href is absolute so it still works when in subfolders
+                    const targetHref = new URL(this.getAttribute('href'), location.href).href;
+
+                    try {
+                        if (loader) {
+                            loader.style.display = 'flex';
+                            // optional: make the loader opaque and prevent scroll
+                            document.documentElement.style.overflow = 'hidden';
+                            document.body.style.overflow = 'hidden';
+                            // force reflow so the loader paint happens before we navigate
+                            void loader.offsetWidth;
+                            console.log('Loader displayed, navigating to', targetHref);
+                        } else {
+                            console.log('No loader found — navigating immediately to', targetHref);
+                        }
+                    } catch (err) {
+                        console.error('Loader show error', err);
+                    }
+
+                    // short delay so user sees the loader; adjust ms as you like
+                    setTimeout(() => {
+                        // restore overflow (not strictly necessary as page will unload)
+                        document.documentElement.style.overflow = '';
+                        document.body.style.overflow = '';
+                        window.location.href = targetHref;
+                    }, 1200); // 600ms feels snappy; use 1200 or 1500 if you prefer longer
+                });
+            });
+
+            // Debug helper: expose a quick test function in console
+            window.__loaderDebug = () => {
+                console.log('page-loader element:', document.getElementById('page-loader'));
+                console.log('nav a[href] count:', document.querySelectorAll('nav a[href]').length);
+            };
+        });
+
+    </script>
+
+</head>
+
+<body>
+
+    <!-- 🔥 Loader HTML -->
+    <div id="page-loader">
+        <img src="./img/cadetlogo_prev_ui.png" alt="Loading..." class="loader-icon">
+    </div>
+
+
+    <header>
+        <div class="logo">
+            <a href="index.html"><img src="./img/cadetlogo_prev_ui.png" alt="Cadet Logo"></a>
+        </div>
+        <div class="logo-right">
+            <a href="about.html"><img src="./img/image.png" alt="3rd Brigade Logo"></a>
+        </div>
+        <nav>
+            <ul class="new">
+                <li><a href="#home">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="apply.php">Apply</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <div class="videoWrapper">
+            <iframe src="https://www.dvidshub.net/video/embed/653017?autoplay=1&muted=1" width="800" height="450"
+                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <div class="hero-text">
+            <h1 id="shake-text">Join the 3rd Brigade</h1>
+            <p>Train with the best and <br> become a leader of tomorrow.</p>
+            <a href="apply.php" class="btn">Apply Now</a>
+        </div>
+    </section>
+
+    <!-- New section for Dashboard and News quick links -->
+    <section class="quick-links-container">
+        <div class="quick-link-item">
+            <a href="user_dashboard.php">
+                <i class="fas fa-chart-bar icon"></i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+        <div class="quick-link-item">
+            <a href="news.php">
+                <i class="fas fa-bullhorn icon"></i>
+                <span>News</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="fancy-bg">
+        <div class="content-wrapper">
+            <div class="big-text">Our Mission</div>
+            <p class="mission-text">
+                To prepare and develop future leaders through trainings and strong values.
+                Join us to learn teamwork, discipline, and leadership skills essential for success
+                in the Army and beyond.
+            </p>
+            <div class="quote-box">
+                <blockquote>
+                    "A leader is one who knows the way, goes the way, and shows the way."
+                </blockquote>
+                <cite>- John C. Maxwell</cite>
+            </div>
+        </div>
+    </section>
+
+
+    <section>
+        <div class="image-container">
+            <img src="./img/OK.jpg" alt="Army Cadets in Training">
+            <img src="./img/oyocdtsalut.jpeg" alt="Army Cadet Marching">
+            <img src="./img/Drift.jpg" alt="Army Cadet Leadership Development">
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="footer-links">
+            <div><a href="contact.php">Contact Us</a></div>
+            <div><a href="faqs.html">FAQs</a></div>
+            <div><a href="gallery.html  ">Gallery</a></div>
+            <div><a href="privacy.html">Privacy Policy</a></div>
+            <div><a href="developer.html">About the Developer</a></div>
+            <div><a href="https://www.facebook.com" target="_blank">Facebook</a></div>
+            <div><a href="https://www.instagram.com" target="_blank">Instagram</a></div>
+            <div><a href="https://www.tiktok.com" target="_blank">TikTok</a></div>
+            <div><a href="mailto:nccnoyonigeria@gmail.com" target="_blank">Gmail</a></div>
+        </div>
+        <p>&copy; 2024 3rd Brigade Headquarters. All Rights Reserved.</p>
+    </footer>
+</body>
+
+</html>

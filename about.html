@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Playfair+Display&family=Roboto&display=swap"
+        rel="stylesheet">
+    <link rel=" icon" href="./img/cadetlogo_prev_ui.png" type="image/png">
+    <title>About - 3rd Brigade Headquarters</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1b2d1b, #3a5a40, #2d4739);
+            background-size: 200px;
+            background-attachment: fixed;
+            color: #fff;
+            font-family: "Inter", system-ui, sans-serif;
+            animation: backgroundAnimation 15s infinite;
+        }
+
+        header {
+            position: static;
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        /* Logo styling */
+        .logo {
+            position: absolute;
+            /* Position it to the very start of the page */
+            top: 25px;
+            /* Adjust the top margin if needed */
+            left: 2px;
+            /* Adjust the left margin to keep it at the start */
+        }
+
+        .logo img {
+            width: 60px;
+            /* Adjust the width of the logo */
+            height: auto;
+            /* Maintain the aspect ratio */
+        }
+
+        nav {
+            margin: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .commander {
+            margin-bottom: 30px;
+            /* Space below the image */
+        }
+
+        .commander-image {
+            width: 250px;
+            /* Adjust size as needed */
+            height: auto;
+            /* Maintain aspect ratio */
+            border-radius: 15px;
+            /* Rounded corners */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            /* Box shadow */
+        }
+
+        .commander-name {
+            font-size: 24px;
+            margin-top: 10px;
+            font-weight: bold;
+            /* Make name stand out */
+        }
+
+        /* Style the mission text */
+        .mission-text {
+            color: #4B5320;
+            font-size: 22px;
+            /* Bigger font for emphasis */
+            font-family: 'Playfair Display', serif;
+            line-height: 1.5;
+            /* Improved readability */
+            margin: 20px 0;
+            /* Space around the text */
+            padding: 15px;
+            /* Padding for the text area */
+            background-color: #e3e3e3;
+            /* Light grey background */
+            border-left: 5px solid #2e7d32;
+            /* Green left border */
+            border-radius: 5px;
+            /* Slightly rounded corners */
+        }
+
+        /* Style the quote box */
+        .quote-box {
+            color: #4B5320;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f1f8e9;
+            /* Light green background */
+            border-left: 5px solid #2e7d32;
+            /* Darker green left border */
+            border-radius: 5px;
+            /* Rounded corners */
+        }
+
+        .quote-box blockquote {
+            color: #4B5320;
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            /* Quote text size */
+            font-style: italic;
+            /* Italic style for emphasis */
+            margin: 0;
+            /* No margin */
+        }
+
+        .quote-box cite {
+            display: block;
+            /* Makes the cite block-level */
+            font-family: 'Playfair Display', serif;
+            text-align: right;
+            /* Right-aligns the cite */
+            margin-top: 10px;
+            /* Space above the cite */
+            font-size: 16px;
+            /* Cite text size */
+            color: #666;
+            /* Grey color for the cite */
+        }
+
+        /* Style headings */
+        h2 {
+            font-size: 3em;
+            /* Increased size for better impact */
+            font-weight: 900;
+            text-transform: uppercase;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 2px;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .fancy {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            /* Dark transparent background */
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Style paragraphs */
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+            /* Improve readability */
+            margin: 10px 0 20px;
+            color: #e2ebf0;
+        }
+
+        /* Style unordered lists */
+        ul {
+            list-style-type: none;
+            /* Remove default bullets */
+            padding: 0;
+            /* Remove padding */
+            color: #e2ebf0;
+        }
+
+        ul li {
+            margin: 10px 0;
+            /* Space between items */
+            font-size: 18px;
+            /* Set font size */
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #333;
+            /* Dark background for contrast */
+            color: #fff;
+            /* White text */
+            padding: 20px;
+            /* Padding */
+            text-align: center;
+            /* Centered text */
+        }
+
+        .social-links a {
+            margin: 0 10px;
+            /* Space between links */
+            color: #fff;
+            /* White text */
+            text-decoration: none;
+            /* Remove underline */
+        }
+
+        .social-links a:hover {
+            text-decoration: underline;
+            /* Underline on hover */
+        }
+
+        .commander {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .commander img {
+            width: 300px;
+            /* Adjust size as needed */
+            height: auto;
+            /* Maintain aspect ratio */
+            border-radius: 10px;
+            /* Rounded corners */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            /* Box shadow for depth */
+            transition: transform 0.3s;
+            /* Smooth scaling effect on hover */
+        }
+
+        .commander img:hover {
+            transform: scale(1.05);
+            /* Slightly enlarge the image on hover */
+        }
+
+        .commander h3 {
+            font-size: 24px;
+            color: #333;
+            transition: transform 0.3s;
+        }
+
+        .commander h3:hover {
+            transform: rotate(2deg);
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html"><img src="./img/cadetlogo_prev_ui.png" alt="3rd Brigade Logo"></a>
+        </div>
+        <h1>About 3rd Brigade Headquarters</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="developer.html">About the Developer</a>
+        </nav>
+    </header>
+    <main>
+        <div class="commander">
+            <img src="./img/About.jpg" alt="CDT Ambassador Engr. Major Segun Adejumo">
+            <h3>CDT ENGR AMBASSADOR COL. SEGUN ADEJUMO</h3>
+        </div>
+        <p class="mission-text">
+            The 3rd Brigade Headquarters is dedicated to nurturing the next generation of leaders
+            through disciplined training, unwavering commitment, and fostering a spirit of service.
+            Our vision is to empower cadets with the knowledge and skills required for a successful
+            future in service to their country.
+        </p>
+
+        <div class="quote-box">
+            <blockquote>
+                "The future belongs to those who prepare for it today."
+            </blockquote>
+            <cite>- Malcolm X</cite>
+        </div>
+        <div class="fancy">
+            <h2>Core Values</h2>
+            <ul>
+                <li><strong>Integrity:</strong> Upholding the highest standards of honesty and ethics.</li>
+                <li><strong>Discipline:</strong> Maintaining self-control and following the established code of conduct.
+                </li>
+                <li><strong>Commitment:</strong> Demonstrating unwavering dedication to the mission and goals.</li>
+                <li><strong>Excellence:</strong> Striving for the highest quality in all endeavors.</li>
+            </ul>
+
+            <h2>History of Cadet Corps in Nigeria</h2>
+            <p>
+                The Nigerian Cadet Corps program has been pivotal in shaping the country's future leaders.
+                Established to instill discipline and leadership qualities among the youth, it plays a crucial
+                role in national development. Cadets undergo rigorous training, participate in community service,
+                and learn essential military skills, preparing them for various future roles.
+            </p>
+
+            <h2>Benefits of Joining</h2>
+            <ul>
+                <li>Leadership training that builds confidence.</li>
+                <li>Physical fitness programs to enhance health.</li>
+                <li>Opportunities for scholarships and higher education.</li>
+                <li>Networking with professionals and community leaders.</li>
+            </ul>
+
+            <h2>Training Programs</h2>
+            <p>
+                Our training programs include physical fitness, leadership development, survival skills, and
+                teamwork exercises. Cadets also participate in community service projects, helping to build
+                character and a sense of responsibility.
+            </p>
+
+            <h2>Join Us</h2>
+            <p>
+                If you are ready to embark on a journey of self-discovery and leadership, apply today to
+                become a part of the 3rd Brigade Headquarters. Together, we can build a stronger future.
+            </p>
+        </div>
+    </main>
+    <br>
+    <br>
+    <footer>
+        <p>Follow us on:</p>
+        <div class="social-links">
+            <a href="contact.html">Contact Us</a>
+            <a href="faqs.html">FAQs</a>
+            <a href="https://www.facebook.com" target="_blank">Facebook</a>
+            <a href="https://www.instagram.com" target="_blank">Instagram</a>
+            <a href="mailto:nccnoyonigeria@gmail.com" target="_blank">Gmail</a>
+            <a href="developer.html">About the Developer</a>
+        </div>
+        <p>&copy; 2024 3rd Brigade Headquarters. All Rights Reserved.</p>
+    </footer>
+</body>
+
+</html>

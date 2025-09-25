@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers at 3rd Brigade Headquarters</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel=" icon" href="./img/cadetlogo_prev_ui.png" type="image/png">
+    <link rel=" icon" href="favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel=" icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel=" icon" href="favicon-64x64.png" sizes="64x64" type="image/png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            text-align: center;
+            position: static;
+        }
+
+        /* Logo styling */
+        .logo {
+            position: relative;
+            /* Let it flow naturally */
+            top: auto;
+            left: auto;
+            margin-bottom: 10px;
+        }
+
+        .logo img {
+            width: 60px;
+            /* Adjust the width of the logo */
+            height: auto;
+            /* Maintain the aspect ratio */
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        h1 {
+            font-size: 48px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 40px;
+            margin: 20px 0;
+        }
+
+        /* Style unordered lists */
+        ul {
+            font-size: 20px;
+            list-style-type: none;
+            /* Remove default bullets */
+            padding: 0;
+            /* Remove padding */
+        }
+
+        ul li {
+            margin: 10px 0;
+            /* Space between items */
+            font-size: 18px;
+            /* Set font size */
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+            /* Improve readability */
+            margin: 10px 0 20px;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #333;
+        }
+
+        /* Responsive tweaks */
+        @media (min-width: 769px) {
+            header {
+                flex-direction: row;
+                /* Side by side on larger screens */
+                justify-content: space-between;
+                text-align: left;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html"><img src="./img/cadetlogo_prev_ui.png" alt="3rd Brigade Logo"></a>
+        </div>
+        <h1>Careers at 3rd Brigade Headquarters</h1>
+        <p>Join us in shaping the future of our nation!</p>
+        <nav>
+            <a href="index.html">Home</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section>
+            <h2>Why Choose a Career with Us?</h2>
+            <p>At the 3rd Brigade Headquarters, we are committed to developing leaders who are ready to face the
+                challenges of tomorrow. Our careers offer:</p>
+            <ul>
+                <li>Leadership Development</li>
+                <li>Physical Fitness Programs</li>
+                <li>Competitive Salaries and Benefits</li>
+                <li>Opportunities for Advancement</li>
+                <li>Scholarships for Further Education</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Available Positions</h2>
+            <div class="card">
+                <h3>Cadet Training Officer</h3>
+                <p>Lead and mentor the next generation of leaders in rigorous training programs.</p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+            <div class="card">
+                <h3>Logistics Coordinator</h3>
+                <p>Manage and oversee logistical operations to ensure efficient training processes.</p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+            <div class="card">
+                <h3>Administrative Support Staff</h3>
+                <p>Provide essential support to ensure smooth operations within the brigade.</p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+            <div class="card">
+                <h3>Medical Officer</h3>
+                <p>A Medical Officer is a qualified physician who provides medical care to military personnel. They are
+                    responsible for diagnosing and treating illnesses and injuries, conducting health assessments, and
+                    ensuring the overall health and readiness of troops.</p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+            <div class="card">
+                <h3>Intelligence Officer</h3>
+                <p>An Intelligence Officer gathers, analyzes, and interprets information to support military operations.
+                    They are responsible for collecting data on enemy capabilities, intentions, and movements, as well
+                    as providing assessments that aid in strategic planning and decision-making.</p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+            <div class="card">
+                <h3>Tradok (Training Officer)</h3>
+                <p>A Tradok, or Training Officer, is responsible for the planning, coordination, and execution of
+                    training programs for military personnel. Their role involves assessing training needs, developing
+                    training curricula, and ensuring that service members acquire the necessary skills and knowledge to
+                    perform their duties effectively. </p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+            <div class="card">
+                <h3>Cadet Police</h3>
+                <p>A C.P., or Cadet Police Officer, typically refers to an individual responsible for ensuring the
+                    safety and security of civilians in a military context. This role may involve coordinating security
+                    operations, implementing safety protocols, and working with local law enforcement to protect
+                    communities during military operations or in conflict zones. </p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+            <div class="card">
+                <h3>Special Force</h3>
+                <p>Special Forces refers to highly trained military units that are skilled in unconventional warfare,
+                    counter-terrorism, and special reconnaissance missions. Members of Special Forces undergo rigorous
+                    training and are often deployed in situations that require specialized skills, such as hostage
+                    rescue, intelligence gathering, and direct action against high-value targets. </p>
+                <a href="#" class="button">Apply Now</a>
+            </div>
+        </section>
+
+        <section>
+            <h2>Career Pathways</h2>
+            <p>We offer a variety of career pathways that cater to your skills and interests. Explore opportunities in:
+            </p>
+            <ul>
+                <li>Field Training</li>
+                <li>Logistics and Supply Chain</li>
+                <li>Administrative and Support Roles</li>
+                <li>Technical and Specialist Positions</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Application Process</h2>
+            <p>To apply for a position, follow these steps:</p>
+            <ol>
+                <li>Choose a position from the list above.</li>
+                <li>Submit your application through our online portal.</li>
+                <li>Participate in an interview process.</li>
+                <li>Complete required training if selected.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>FAQs</h2>
+            <p>Have questions? Check out our <a href="faqs.html" class="button">FAQs</a> page for more information!</p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 3rd Brigade Headquarters. All Rights Reserved.</p>
+        <div>
+            <a href="https://www.facebook.com" target="_blank" style="color: white;">Facebook</a> |
+            <a href="https://www.instagram.com" target="_blank" style="color: white;">Instagram</a> |
+            <a href="https://www.tiktok.com" target="_blank" style="color: white;">TikTok</a>
+        </div>
+    </footer>
+
+    <script>
+        // Add any custom JavaScript or jQuery effects here
+        $(document).ready(function () {
+            // Example of adding magic: a fade-in effect for the sections
+            $("section").hide().fadeIn(1000);
+        });
+    </script>
+</body>
+
+</html>
