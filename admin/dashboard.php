@@ -1,3 +1,40 @@
+<?php
+// Reusing your database connection details
+$host = 'localhost';
+$db   = 'cadetportal';
+$user = 'root';
+$pass = '';
+
+$new_applications_count = 0; // Initialize the counter
+
+// Attempt to establish connection
+$conn = @new mysqli($host, $user, $pass, $db);
+
+if (!$conn->connect_error) {
+    // We only need a count, so use a very fast COUNT(*) query.
+    // The query logic here should mirror the filtering in new_applications.php
+    $sql_count = "
+        SELECT 
+            COUNT(DISTINCT a.id) AS total_applications
+        FROM 
+            applications a
+        LEFT JOIN 
+            payments p ON a.id = p.application_id
+        -- OPTIONAL: If 'New' means 'Pending Review', you might add a WHERE clause here
+        -- WHERE p.status IS NULL OR p.status = 'Pending' 
+    ";
+
+    $result_count = $conn->query($sql_count);
+
+    if ($result_count && $row = $result_count->fetch_assoc()) {
+        $new_applications_count = $row['total_applications'];
+        $result_count->free();
+    }
+
+    $conn->close();
+}
+// Note: If the connection fails, $new_applications_count will remain 0, which is safe.
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -365,7 +402,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/gallery.html" class="nav-link">
+                            <a href="./gallery_admin.php" class="nav-link">
                                 <i class="nav-icon far fa-image"></i>
                                 <p>
                                     Gallery
@@ -437,29 +474,28 @@
                             <!-- small box -->
                             <div class="small-box bg-info">
                                 <div class="inner">
-                                    <h3 id="new-applications-count">...</h3>
+                                    <h3 id="new-applications-count"><?= $new_applications_count ?></h3>
 
                                     <p>New Applications</p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-person-add"></i>
                                 </div>
-                                <a href="./new_applications.html" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="./new_applications.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                         <!-- ./col -->
                         <div class="col-lg-3 col-6">
-                            <!-- small box -->
                             <div class="small-box bg-success">
                                 <div class="inner">
-                                    <h3 id="bounce-rate-count">...<sup style="font-size: 20px">%</sup></h3>
+                                    <h3 id="bounce-rate-count"><span id="dashboard-bounce-rate">N/A</span><sup style="font-size: 20px">%</sup></h3>
 
                                     <p>Bounce Rate</p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-stats-bars"></i>
                                 </div>
-                                <a href="./bounce_rate.html" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="./bounce_rate.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                         <!-- ./col -->
@@ -474,7 +510,7 @@
                                 <div class="icon">
                                     <i class="ion ion-person-add"></i>
                                 </div>
-                                <a href="./user_registrations.html" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="./user_registrations.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                         <!-- ./col -->
@@ -489,7 +525,7 @@
                                 <div class="icon">
                                     <i class="ion ion-pie-graph"></i>
                                 </div>
-                                <a href="./unique_visitors.html" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="./unique_visitors.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                         <!-- ./col -->
@@ -775,6 +811,118 @@
         }
     </script>
 
+    <script type="module">
+        // NOTE: This script must be placed at the bottom of your dashboard HTML file, 
+        // before the closing </body> tag.
+
+        // Import necessary Firebase modules
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import {
+            getAuth,
+            signInAnonymously,
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            onSnapshot,
+            setLogLevel
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        setLogLevel('Debug'); // Enable logging for debugging
+
+
+        /**
+         * Initializes Firebase, authenticates, and sets up the Firestore listener.
+         * All variable declarations are now local to this function scope to prevent 
+         * the "Cannot redeclare block-scoped variable" error.
+         */
+        const initializeAuthAndListener = async () => {
+
+            // --- Configuration Setup (Now local to this function) ---
+            const MOCK_FIREBASE_CONFIG = {
+                apiKey: "MOCK_KEY_TO_ALLOW_INIT",
+                authDomain: "mock-project.firebaseapp.com",
+                projectId: "mock-project-id",
+                storageBucket: "mock-project.appspot.com",
+                messagingSenderId: "123456789012",
+                appId: "1:123456789012:web:abcdef123456"
+            };
+
+            const envConfigRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+            let firebaseConfig;
+
+            try {
+                firebaseConfig = envConfigRaw ? JSON.parse(envConfigRaw) : MOCK_FIREBASE_CONFIG;
+                if (!firebaseConfig.projectId) {
+                    firebaseConfig = MOCK_FIREBASE_CONFIG;
+                }
+            } catch (e) {
+                firebaseConfig = MOCK_FIREBASE_CONFIG;
+            }
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'demo-app';
+            // Get the dashboard element reference inside the listener function
+            const dashboardRateElement = document.getElementById('dashboard-bounce-rate');
+            // --- End Configuration Setup ---
+
+            // Check if the target element exists before proceeding
+            if (!dashboardRateElement) {
+                console.error("Dashboard Bounce Rate Element (#dashboard-bounce-rate) not found.");
+                return;
+            }
+
+            try {
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                const auth = getAuth(app);
+
+                // 1. Authenticate
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("Dashboard Firebase Sign-In Successful.");
+
+                // 2. Set up the Real-time Listener
+                const bounceRateDocRef = doc(db, `artifacts/${appId}/public/data/analytics/bounceRate`);
+
+                onSnapshot(bounceRateDocRef, (docSnap) => {
+                    if (docSnap.exists() && dashboardRateElement) {
+                        const data = docSnap.data();
+                        // Use a mock rate if data.currentRate is missing, but default to 0 for calculation
+                        const rate = data.currentRate !== undefined ? data.currentRate : 0;
+
+                        // Format the value to one decimal place
+                        const displayValue = rate.toFixed(1);
+
+                        // Update the dashboard element
+                        dashboardRateElement.textContent = displayValue;
+                        console.log(`Dashboard Bounce Rate updated to ${displayValue}%.`);
+                    } else {
+                        // If data is missing, display the placeholder '--'
+                        dashboardRateElement.textContent = '--';
+                    }
+                }, (error) => {
+                    console.error("Firestore Read Error on Dashboard Widget:", error);
+                    // On error, display a short error indicator
+                    dashboardRateElement.textContent = 'Err';
+                });
+
+            } catch (error) {
+                console.error("Dashboard Initialization Failed:", error);
+                dashboardRateElement.textContent = 'FAIL';
+            }
+        };
+
+        // Execute the function once the DOM is ready
+        window.addEventListener('DOMContentLoaded', initializeAuthAndListener);
+    </script>
+
+
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -805,9 +953,6 @@
     <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="dist/js/demo.js"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard.js"></script>
 </body>
 

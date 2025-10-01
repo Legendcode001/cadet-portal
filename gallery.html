@@ -24,12 +24,15 @@
 
         ::-webkit-scrollbar-track {
             background: #2d3748;
+            /* gray-700 */
         }
 
         ::-webkit-scrollbar-thumb {
             background-color: #4a5568;
+            /* gray-600 */
             border-radius: 5px;
             border: 2px solid #2d3748;
+            /* gray-700 */
         }
 
         /* Modal content animation */
@@ -97,6 +100,18 @@
             </div>
         </section>
 
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="text-center py-12 hidden">
+            <svg class="animate-spin h-8 w-8 text-gray-400 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <p class="mt-3 text-gray-500">Loading gallery content...</p>
+        </div>
+
         <!-- Image Gallery Grid -->
         <section id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <!-- Dynamic gallery content will be inserted here by JavaScript -->
@@ -104,12 +119,13 @@
     </main>
 
     <!-- Modal Structure -->
-    <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 hidden">
-        <div class="relative max-w-5xl mx-auto p-4">
+    <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 hidden"
+        onclick="closeModal()">
+        <div class="relative max-w-5xl mx-auto p-4" onclick="event.stopPropagation()">
             <!-- Close button for the modal -->
             <span class="absolute top-2 right-4 text-white text-4xl font-light cursor-pointer hover:text-gray-300"
                 onclick="closeModal()">&times;</span>
-            <img class="w-full max-h-[80vh] rounded-lg shadow-2xl object-contain" id="modalImage"
+            <img class="w-full max-h-[80vh] rounded-lg shadow-2xl object-contain modal-content" id="modalImage"
                 alt="Enlarged gallery image">
             <div id="modalCaption" class="text-center mt-4 text-gray-300 text-lg font-medium"></div>
         </div>
@@ -130,7 +146,7 @@
         </div>
     </footer>
 
-    <!-- JavaScript for the Modal -->
+    <!-- JavaScript for the Modal and Gallery Logic -->
     <script>
         // Data structure for the galleries, organized by year and category
         const galleryData = {
@@ -271,7 +287,22 @@
         const galleryGrid = document.getElementById('gallery-grid');
         const yearNav = document.getElementById('year-nav');
         const categoryNav = document.getElementById('category-nav');
+        const loadingIndicator = document.getElementById('loading-indicator');
         let currentYear = '2025';
+
+        /**
+         * Converts the 'uploaded:' format URL to a static 'img/' path.
+         * e.g., 'uploaded:Dril1.png-...' becomes 'img/Dril1.png'
+         * @param {string} imageUrl The source URL from the data structure.
+         * @returns {string} The usable image path.
+         */
+        function getUsableImagePath(imageUrl) {
+            if (imageUrl.startsWith('uploaded:')) {
+                const parts = imageUrl.substring('uploaded:'.length).split('-');
+                return 'img/' + parts[0];
+            }
+            return imageUrl;
+        }
 
         // Function to render the category buttons for the selected year
         function renderCategoryButtons(year) {
@@ -299,22 +330,18 @@
             }
         }
 
-        // This helper function creates the image element and correctly handles the image URL
+        // This helper function creates the image element
         function createImageElement(image) {
             const item = document.createElement('div');
-            item.className = 'relative group cursor-pointer overflow-hidden rounded-lg shadow-xl';
+            item.className = 'relative group cursor-pointer overflow-hidden rounded-lg shadow-xl aspect-video';
             item.setAttribute('onclick', 'openModal(this)');
 
-            // We must convert the 'uploaded:' URL into a usable path
-           let imageUrl = image.src;
-    if (imageUrl.startsWith('uploaded:')) {
-        const fileName = imageUrl.substring('uploaded:'.length).split('-')[0];
-        imageUrl = 'img/' + fileName;
-    }
+            const imageUrl = getUsableImagePath(image.src);
 
             item.innerHTML = `
-                <img src="${imageUrl}" alt="${image.caption}" class="w-full h-auto transform group-hover:scale-110 transition-transform duration-500 rounded-lg">
-                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gray-900 bg-opacity-70 group-hover:bg-opacity-80 transition-opacity duration-300">
+                <img src="${imageUrl}" alt="${image.caption}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 rounded-lg"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/1C2833/ffffff?text=Image+Unavailable';">
+                <div class="absolute inset-0 flex items-end p-3 bg-gradient-to-t from-gray-900/80 to-transparent">
                     <p class="text-xs sm:text-sm font-semibold text-gray-200">${image.caption}</p>
                 </div>
             `;
@@ -324,31 +351,43 @@
         // Function to render images for a specific category
         function renderCategory(year, category) {
             galleryGrid.innerHTML = '';
+            loadingIndicator.classList.remove('hidden'); // Show loading indicator
 
-            // Remove active state from all category buttons
-            const categoryButtons = categoryNav.querySelectorAll('button');
-            categoryButtons.forEach(btn => btn.classList.remove('active-gallery'));
+            // Simulate loading time for better UX
+            setTimeout(() => {
+                // Remove active state from all category buttons
+                const categoryButtons = categoryNav.querySelectorAll('button');
+                categoryButtons.forEach(btn => btn.classList.remove('active-gallery'));
 
-            let imagesToDisplay = [];
-            if (category === 'all') {
-                for (const cat in galleryData[year]) {
-                    imagesToDisplay = imagesToDisplay.concat(galleryData[year][cat]);
+                let imagesToDisplay = [];
+                if (category === 'all') {
+                    // Collect all images from all categories for the year
+                    for (const cat in galleryData[year]) {
+                        imagesToDisplay = imagesToDisplay.concat(galleryData[year][cat]);
+                    }
+                    // Activate 'All' button
+                    const allButton = document.getElementById(`btn-all-${year}`);
+                    if (allButton) allButton.classList.add('active-gallery');
+
+                } else {
+                    // Display images for the specific category
+                    imagesToDisplay = galleryData[year][category];
+                    // Activate specific category button
+                    const categoryButton = document.getElementById(`btn-${year}-${category.toLowerCase().replace(/\s/g, '-')}`);
+                    if (categoryButton) categoryButton.classList.add('active-gallery');
                 }
-                document.getElementById(`btn-all-${year}`).classList.add('active-gallery');
-            } else {
-                imagesToDisplay = galleryData[year][category];
-                document.getElementById(`btn-${year}-${category.toLowerCase().replace(/\s/g, '-')}`).classList.add('active-gallery');
-            }
 
-            if (!imagesToDisplay || imagesToDisplay.length === 0) {
-                galleryGrid.innerHTML = '<p class="text-center text-gray-400 text-lg col-span-full">No content available for this category.</p>';
-                return;
-            }
+                if (!imagesToDisplay || imagesToDisplay.length === 0) {
+                    galleryGrid.innerHTML = '<p class="text-center text-gray-400 text-lg col-span-full">No content available for this category.</p>';
+                } else {
+                    imagesToDisplay.forEach(image => {
+                        const item = createImageElement(image);
+                        galleryGrid.appendChild(item);
+                    });
+                }
 
-            imagesToDisplay.forEach(image => {
-                const item = createImageElement(image);
-                galleryGrid.appendChild(item);
-            });
+                loadingIndicator.classList.add('hidden'); // Hide loading indicator after rendering
+            }, 400); // 400ms delay
         }
 
         // Function to handle year button clicks
@@ -359,7 +398,8 @@
             yearButtons.forEach(btn => btn.classList.remove('active-gallery'));
 
             // Add active state to the clicked year button
-            document.getElementById(`btn-${year}`).classList.add('active-gallery');
+            const yearButton = document.getElementById(`btn-${year}`);
+            if (yearButton) yearButton.classList.add('active-gallery');
 
             // Render the category buttons for the selected year and then render the 'All' category
             renderCategoryButtons(year);
@@ -380,6 +420,13 @@
         function closeModal() {
             imageModal.classList.add('hidden');
         }
+
+        // Global Event Listener for Modal Closing on Escape Key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
 
         // Initial load: show the 2025 gallery when the page first opens
         document.addEventListener('DOMContentLoaded', () => {

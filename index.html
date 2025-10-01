@@ -271,6 +271,208 @@
         </div>
         <p>&copy; 2024 3rd Brigade Headquarters. All Rights Reserved.</p>
     </footer>
+    <script type="module">
+        // This script must be included on every page you wish to track.
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import {
+            getAuth,
+            signInAnonymously,
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            updateDoc,
+            getDoc,
+            increment,
+            setLogLevel,
+            setDoc // Added to create the document if it doesn't exist
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        setLogLevel('Debug');
+
+        // --- Configuration Setup ---
+        const MOCK_FIREBASE_CONFIG = {
+            apiKey: "MOCK_KEY_TO_ALLOW_INIT",
+            authDomain: "mock-project.firebaseapp.com",
+            projectId: "mock-project-id",
+            storageBucket: "mock-project.appspot.com",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+
+        const envConfigRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+        let firebaseConfig;
+
+        try {
+            firebaseConfig = envConfigRaw ? JSON.parse(envConfigRaw) : MOCK_FIREBASE_CONFIG;
+            if (!firebaseConfig.projectId) {
+                firebaseConfig = MOCK_FIREBASE_CONFIG;
+            }
+        } catch (e) {
+            firebaseConfig = MOCK_FIREBASE_CONFIG;
+        }
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'demo-app';
+
+        // Key used to store the last visit timestamp in localStorage
+        const LOCAL_STORAGE_KEY = 'portal_unique_visitor';
+        // The main Firestore path for the visitors document
+        const VISITORS_DOC_PATH = `artifacts/${appId}/public/data/analytics/visitors`;
+        // --- End Configuration Setup ---
+
+        /**
+         * Checks if 24 hours have passed since the last visit.
+         * @param {number} lastVisitTimestamp - Unix timestamp in milliseconds.
+         * @returns {boolean} True if the visitor is new or 24 hours have passed.
+         */
+        const isNewVisitor = (lastVisitTimestamp) => {
+            if (!lastVisitTimestamp) return true;
+            const now = Date.now();
+            // 24 hours in milliseconds
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            return (now - lastVisitTimestamp) > twentyFourHours;
+        };
+
+        /**
+         * Resets the daily count in Firestore if a new day has started.
+         * @param {object} docData - The current data from the Firestore document.
+         * @param {object} docRef - The Firestore document reference.
+         */
+        const rotateDataIfNewDay = async (docData, docRef) => {
+            const now = new Date();
+            // Determine if the local time is a new day compared to the last recorded update
+            const lastUpdateDate = docData.lastUpdated ? new Date(docData.lastUpdated) : new Date(0);
+
+            // Simple check: Is the current day number different from the last update's day number?
+            if (now.getDate() !== lastUpdateDate.getDate() || now.getMonth() !== lastUpdateDate.getMonth()) {
+
+                // 1. Prepare to shift the data: Drop Monday's data, shift everything left, and reset Sunday's count to 0.
+                const currentDailyData = docData.dailyData || [];
+                let newDailyData = [];
+
+                if (currentDailyData.length === 7) {
+                    // Shift data: Tue becomes Mon, Wed becomes Tue, etc.
+                    newDailyData = [
+                        { date: 'Mon', count: currentDailyData[1].count },
+                        { date: 'Tue', count: currentDailyData[2].count },
+                        { date: 'Wed', count: currentDailyData[3].count },
+                        { date: 'Thu', count: currentDailyData[4].count },
+                        { date: 'Fri', count: currentDailyData[5].count },
+                        { date: 'Sat', count: currentDailyData[6].count },
+                        { date: 'Sun', count: 0 } // Sunday (today) starts at 0
+                    ];
+                } else {
+                    // If data structure is invalid, use mock structure to prevent crashes
+                    newDailyData = [
+                        { date: 'Mon', count: 0 },
+                        { date: 'Tue', count: 0 },
+                        { date: 'Wed', count: 0 },
+                        { date: 'Thu', count: 0 },
+                        { date: 'Fri', count: 0 },
+                        { date: 'Sat', count: 0 },
+                        { date: 'Sun', count: 0 }
+                    ];
+                }
+
+                console.log("New day detected. Resetting count and rotating daily data.");
+
+                await updateDoc(docRef, {
+                    todayCount: 0,
+                    dailyData: newDailyData,
+                    lastUpdated: now.toISOString()
+                });
+
+                // Return true to indicate a reset happened
+                return true;
+            }
+
+            // Return false to indicate no reset happened
+            return false;
+        };
+
+        /**
+         * Main tracking function executed on page load.
+         */
+        const trackVisitor = async () => {
+            let app, db, auth;
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // 1. Authenticate (Anonymously is usually sufficient for a tracker)
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                const lastVisit = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+                if (isNewVisitor(lastVisit)) {
+
+                    const visitorsDocRef = doc(db, VISITORS_DOC_PATH);
+                    const docSnap = await getDoc(visitorsDocRef);
+
+                    let countIncremented = false;
+
+                    if (docSnap.exists()) {
+                        const docData = docSnap.data();
+
+                        // Check if a new day has started, and reset if necessary
+                        await rotateDataIfNewDay(docData, visitorsDocRef);
+
+                        // 2. Increment the count atomically
+                        await updateDoc(visitorsDocRef, {
+                            todayCount: increment(1),
+                            // Also update the daily array's current day count (Sun is the 6th index)
+                            'dailyData.6.count': increment(1)
+                        });
+
+                        console.log(`Unique Visitor counted. Total count incremented by 1.`);
+                        countIncremented = true;
+                    } else {
+                        // FIX: Document does not exist. Create it with initial structure and set count to 1.
+                        const initialDailyData = [
+                            { date: 'Mon', count: 0 }, { date: 'Tue', count: 0 }, { date: 'Wed', count: 0 },
+                            { date: 'Thu', count: 0 }, { date: 'Fri', count: 0 }, { date: 'Sat', count: 0 },
+                            { date: 'Sun', count: 0 }
+                        ];
+
+                        // Today's visit is 1, apply it to the Sunday index (6) for consistency with the dashboard chart
+                        initialDailyData[6].count = 1;
+
+                        await setDoc(visitorsDocRef, {
+                            todayCount: 1,
+                            dailyData: initialDailyData,
+                            lastUpdated: new Date().toISOString()
+                        });
+
+                        console.log("Visitors document created and counted first unique visit.");
+                        countIncremented = true;
+                    }
+
+                    // 3. Update localStorage timestamp only if the count was successfully incremented
+                    if (countIncremented) {
+                        localStorage.setItem(LOCAL_STORAGE_KEY, Date.now().toString());
+                    }
+
+                } else {
+                    console.log("Visitor counted within the last 24 hours. No action taken.");
+                }
+
+            } catch (error) {
+                // Log error but do not disrupt the user's experience
+                console.error("Unique Visitor Tracking Error:", error);
+            }
+        };
+
+        // Run the tracking logic on page load
+        window.addEventListener('load', trackVisitor);
+    </script>
+
 </body>
 
 </html>
