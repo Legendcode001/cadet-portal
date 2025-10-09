@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadet Access Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            /* Dark background */
+        }
+
+        .login-card {
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+            /* Subtle green glow for tech feel */
+            border: 1px solid #38a169;
+            /* Military green border */
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Login Card -->
+    <div id="login-container" class="login-card w-full max-w-md bg-gray-800 p-8 rounded-none">
+        <h2
+            class="text-3xl font-extrabold text-green-400 mb-2 text-center tracking-wider border-b border-green-700 pb-3">
+            CADET AUTHENTICATION
+        </h2>
+        <p class="text-lg text-gray-300 mb-6 text-center">
+            Security Clearance Required
+        </p>
+
+        <form onsubmit="handleLogin(event)">
+            <div class="space-y-5">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-400 mb-1">IDENTIFIER (Email)</label>
+                    <input type="email" id="email" required
+                        class="w-full px-4 py-3 bg-gray-900 border border-green-700 text-white placeholder-gray-500 focus:ring-green-500 focus:border-green-500 transition duration-150 rounded-none"
+                        placeholder="admin@secureportal.com">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-400 mb-1">ACCESS CODE
+                        (Password)</label>
+                    <input type="password" id="password" required
+                        class="w-full px-4 py-3 bg-gray-900 border border-green-700 text-white placeholder-gray-500 focus:ring-green-500 focus:border-green-500 transition duration-150 rounded-none"
+                        placeholder="SecureDashboard123!">
+                </div>
+            </div>
+
+            <button type="submit" id="login-button"
+                class="w-full mt-8 py-3 px-4 bg-green-700 text-white font-bold tracking-wider hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-150 ease-in-out rounded-none">
+                <span id="button-text">REQUEST CLEARANCE</span>
+            </button>
+        </form>
+
+        <!-- Message Box for Errors -->
+        <div id="message-box"
+            class="mt-6 p-4 hidden rounded-none text-sm font-medium border border-red-700 bg-red-900 text-red-300"
+            role="alert"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        setLogLevel('Debug');
+
+        // --- GLOBAL CANVAS ENVIRONMENT VARIABLES ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // ------------------------------------------
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Expose the necessary function globally
+        window.auth = auth;
+        window.handleLogin = handleLogin;
+
+        const messageBox = document.getElementById('message-box');
+        const loginButton = document.getElementById('login-button');
+        const buttonText = document.getElementById('button-text');
+
+        // Function to display messages (errors or success)
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden', 'border-red-700', 'bg-red-900', 'text-red-300', 'border-green-700', 'bg-green-900', 'text-green-300');
+            if (type === 'error') {
+                messageBox.classList.add('border-red-700', 'bg-red-900', 'text-red-300');
+            } else {
+                messageBox.classList.add('border-green-700', 'bg-green-900', 'text-green-300');
+            }
+            messageBox.classList.remove('hidden');
+        }
+
+        // Authentication State Listener (handles the initial token check for quick redirect)
+        async function initializeAuth() {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                    if (auth.currentUser) {
+                        console.log("Token login successful. Redirecting to dashboard...");
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Authentication setup error:", error.code, error.message);
+            }
+        }
+
+        /**
+         * Handles the form submission and signs the user in.
+         */
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            loginButton.disabled = true;
+            buttonText.textContent = 'AUTHENTICATING...';
+            messageBox.classList.add('hidden');
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+
+                console.log("Login successful!");
+                showMessage('Clearance Granted. Proceeding to Mission Control.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+
+            } catch (error) {
+                let errorMessage;
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                    case 'auth/invalid-credential':
+                        errorMessage = 'ACCESS DENIED: Invalid Identifier or Access Code.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'SYSTEM OFFLINE: Network connection failed.';
+                        break;
+                    default:
+                        errorMessage = `AUTHENTICATION ERROR: ${error.message}`;
+                        console.error("Firebase Login Error:", error.code, error.message);
+                }
+                showMessage(errorMessage, 'error');
+                loginButton.disabled = false;
+                buttonText.textContent = 'REQUEST CLEARANCE';
+            }
+        }
+
+        // Start authentication process on page load
+        initializeAuth();
+
+    </script>
+</body>
+
+</html>

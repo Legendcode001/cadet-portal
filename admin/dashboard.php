@@ -402,7 +402,7 @@ if (!$conn->connect_error) {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./gallery_admin.php" class="nav-link">
+                            <a href="./gallery_admin.html" class="nav-link">
                                 <i class="nav-icon far fa-image"></i>
                                 <p>
                                     Gallery

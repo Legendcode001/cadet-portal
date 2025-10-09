@@ -440,7 +440,7 @@ if (empty($displayAppId)) {
       <div class="content">
 
         <div class="logo">
-          <a href="#"><img src="./img/cadetlogo_prev_ui.png" alt="Cadet Logo"></a>
+          <a href="index.html"><img src="./img/cadetlogo_prev_ui.png" alt="Cadet Logo"></a>
         </div>
 
         <div class="header">
