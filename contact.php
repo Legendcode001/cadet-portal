@@ -47,8 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($honeypot_field)) {
             // TODO: Replace with your actual SMTP server and credentials
             $mail->Host       = 'smtp.gmail.com'; // Example: Gmail SMTP server
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'your_email@gmail.com'; // Your email address
-            $mail->Password   = 'your_app_password'; // Your App Password for authentication
+            $mail->Username   = 'nccnoyonigeria@gmail.com';
+            $mail->Password   = 'ccgm pxpg wigg qdct';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587; // Or 465 for SSL
 
@@ -56,17 +56,95 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($honeypot_field)) {
             $mail->setFrom($email, $name);
             $mail->addAddress($to_email, '3BG-Command Headquarters');
 
+
             // Content
-            $mail->isHTML(false); // Set to true if you want to use HTML in the body
-            $mail->Subject = $subject;
-            $mail->Body    = "You have received a new message from your website contact form.\n\n" .
-                "Name: " . $name . "\n" .
-                "Email: " . $email . "\n" .
-                "Subject: " . $subject . "\n" .
-                "Message: " . $message;
+            $mail->isHTML(true); // *** IMPORTANT: Set to true for HTML body ***
+            $mail->Subject = "COMMUNICATION REPORT: " . $subject;
+
+            // --- HTML EMAIL TEMPLATE (Military Design) ---
+
+            // Use line breaks for HTML email compatibility
+            $html_message = str_replace("\n", "<br>", $message);
+
+            $mail->Body = '
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>' . htmlspecialchars($mail->Subject) . '</title>
+                <style>
+                    /* Basic Reset and Web Fonts */
+                    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #1a1a1a; color: #f0f0f0; }
+                    .container { max-width: 600px; margin: 20px auto; background-color: #2c2c2c; border: 4px solid #b8860b; border-radius: 6px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+                    .header { background-color: #0d0d0d; padding: 15px 20px; text-align: center; border-bottom: 2px solid #b8860b; }
+                    .header h1 { margin: 0; font-size: 20px; color: #e0e0e0; letter-spacing: 2px; text-transform: uppercase; }
+                    .content { padding: 20px; }
+                    .field-block { background-color: #1a1a1a; border: 1px solid #444; padding: 12px; margin-bottom: 10px; border-left: 5px solid #b8860b; border-radius: 3px; }
+                    .field-label { font-weight: bold; color: #b8860b; display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; }
+                    .field-data { font-size: 14px; color: #e0e0e0; }
+                    .message-box { background-color: #121212; border: 1px solid #b8860b; padding: 15px; border-radius: 4px; }
+                    .footer { text-align: center; padding: 10px 20px; font-size: 10px; color: #888; border-top: 1px solid #444; margin-top: 20px; }
+                    .footer a { color: #b8860b; text-decoration: none; }
+                </style>
+            </head>
+            <body>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #1a1a1a;">
+                    <tr>
+                        <td align="center">
+                            <div class="container">
+                                <!-- Header: Mission/Report Status -->
+                                <div class="header">
+                                    <h1>INCOMING CONTACT TRANSMISSION</h1>
+                                    <p style="color:#e0e0e0; font-size:10px; margin-top:5px;">CONFIDENTIALITY LEVEL: HIGH</p>
+                                </div>
+                                
+                                <div class="content">
+                                    <p style="color:#b8860b; font-size:12px; margin-bottom:15px; text-transform:uppercase;">Originator Data Log:</p>
+
+                                    <!-- Name Field -->
+                                    <div class="field-block">
+                                        <span class="field-label">Sender Name (Operator)</span>
+                                        <span class="field-data">' . $name . '</span>
+                                    </div>
+
+                                    <!-- Email Field -->
+                                    <div class="field-block">
+                                        <span class="field-label">Digital Identifier (Email)</span>
+                                        <span class="field-data"><a href="mailto:' . $email . '" style="color: #6a9c9b; text-decoration: none;">' . $email . '</a></span>
+                                    </div>
+                                    
+                                    <!-- Subject Field -->
+                                    <div class="field-block">
+                                        <span class="field-label">Subject Line (Mission Brief)</span>
+                                        <span class="field-data">' . $subject . '</span>
+                                    </div>
+
+                                    <!-- Message Body -->
+                                    <div style="margin-top:20px;">
+                                        <p class="field-label" style="font-size: 13px; color:#b8860b;">MESSAGE CONTENT (RAW FEED)</p>
+                                        <div class="message-box">
+                                            <p style="font-size: 14px; line-height: 1.6; color: #f0f0f0;">' . $html_message . '</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                
+                                <!-- Footer: Command Info -->
+                                <div class="footer">
+                                    <p>--- End of Transmission from 3BG Digital Network ---</p>
+                                    <p>3BG-Command Headquarters | <a href="mailto:' . $to_email . '">Digital Dispatch Center</a></p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>
+            ';
 
             $mail->send();
-            $status_message = "Thank you! Your message has been sent successfully.";
+            $status_message = "Thank you! Your message has been sent successfully. NC4A📌";
             $status_type = "success";
         } catch (Exception $e) {
             $status_message = "Sorry, something went wrong and your message could not be sent. Mailer Error: {$mail->ErrorInfo}";
