@@ -2,69 +2,63 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Gallery - 3rd Brigade Headquarters</title>
-    <!-- Add this to your head for Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="./img/cadetlogo_prev_ui.png" type="image/png">
-    <!-- Using a custom font for a more professional look -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
 
-        /* Custom styles for the scrollbar to match the dark theme */
         ::-webkit-scrollbar {
             width: 10px;
         }
 
         ::-webkit-scrollbar-track {
             background: #2d3748;
-            /* gray-700 */
         }
 
         ::-webkit-scrollbar-thumb {
             background-color: #4a5568;
-            /* gray-600 */
             border-radius: 5px;
             border: 2px solid #2d3748;
-            /* gray-700 */
         }
 
-        /* Modal content animation */
+        .active-gallery {
+            background-color: #1a202c !important;
+            border: 1px solid #4a5568;
+            color: #fff;
+        }
+
         .modal-content {
-            animation-name: zoom;
-            animation-duration: 0.6s;
+            animation: zoom .5s;
         }
 
         @keyframes zoom {
             from {
-                transform: scale(0.1)
+                transform: scale(0.7);
+                opacity: 0;
             }
 
             to {
-                transform: scale(1)
+                transform: scale(1);
+                opacity: 1;
             }
         }
 
-        /* Active button styles */
-        .active-gallery {
-            background-color: #1a202c !important;
-            /* Tailwind's gray-900 */
-            border: 1px solid #4a5568;
-            /* Tailwind's gray-600 */
-            color: #ffffff;
+        .gallery-card {
+            aspect-ratio: 16/10;
+            overflow: hidden;
+            border-radius: .75rem;
         }
     </style>
 </head>
 
 <body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
 
-    <!-- Header Section -->
     <header class="bg-gray-800 shadow-lg py-6 px-4">
         <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
             <h1 class="text-3xl font-bold tracking-tight">3BRIGADE - PHOTO GALLERY</h1>
@@ -76,31 +70,12 @@
     </header>
 
     <main class="flex-grow container mx-auto p-6">
-        <!-- Gallery Navigation Section -->
         <section class="text-center mb-8">
             <h2 class="text-2xl font-semibold text-gray-300 mb-4">Explore Past Galleries</h2>
-            <!-- Year Buttons -->
-            <div class="flex flex-wrap justify-center gap-4 mb-6" id="year-nav">
-                <button id="btn-2025" onclick="changeGallery('2025')"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2025</button>
-                <button id="btn-2024" onclick="changeGallery('2024')"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2024</button>
-                <button id="btn-2023" onclick="changeGallery('2023')"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2023</button>
-                <button id="btn-2022" onclick="changeGallery('2022')"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2022</button>
-                <button id="btn-2021" onclick="changeGallery('2021')"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2021</button>
-                <button id="btn-2020" onclick="changeGallery('2020')"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md">2020</button>
-            </div>
-            <!-- Category Buttons (Dynamically populated) -->
-            <div id="category-nav" class="flex flex-wrap justify-center gap-4">
-                <!-- Buttons for categories will be added here by JavaScript -->
-            </div>
+            <div class="flex flex-wrap justify-center gap-4 mb-6" id="year-nav"></div>
+            <div id="category-nav" class="flex flex-wrap justify-center gap-4"></div>
         </section>
 
-        <!-- Loading Indicator -->
         <div id="loading-indicator" class="text-center py-12 hidden">
             <svg class="animate-spin h-8 w-8 text-gray-400 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
@@ -112,26 +87,23 @@
             <p class="mt-3 text-gray-500">Loading gallery content...</p>
         </div>
 
-        <!-- Image Gallery Grid -->
-        <section id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <!-- Dynamic gallery content will be inserted here by JavaScript -->
-        </section>
+        <section id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></section>
     </main>
 
-    <!-- Modal Structure -->
-    <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 hidden"
-        onclick="closeModal()">
-        <div class="relative max-w-5xl mx-auto p-4" onclick="event.stopPropagation()">
-            <!-- Close button for the modal -->
-            <span class="absolute top-2 right-4 text-white text-4xl font-light cursor-pointer hover:text-gray-300"
-                onclick="closeModal()">&times;</span>
-            <img class="w-full max-h-[80vh] rounded-lg shadow-2xl object-contain modal-content" id="modalImage"
+    <div id="imageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 hidden">
+        <button id="closeModal"
+            class="absolute top-4 right-6 text-white text-4xl font-light cursor-pointer hover:text-gray-300">&times;</button>
+        <button id="prevImage"
+            class="absolute left-6 text-white text-4xl font-light hover:text-gray-300">&#10094;</button>
+        <button id="nextImage"
+            class="absolute right-6 text-white text-4xl font-light hover:text-gray-300">&#10095;</button>
+        <div class="relative max-w-5xl mx-auto p-4 text-center">
+            <img id="modalImage" class="w-full max-h-[80vh] rounded-lg shadow-2xl object-contain modal-content"
                 alt="Enlarged gallery image">
             <div id="modalCaption" class="text-center mt-4 text-gray-300 text-lg font-medium"></div>
         </div>
     </div>
 
-    <!-- Footer Section -->
     <footer class="bg-gray-800 shadow-inner py-6 text-center mt-auto">
         <div class="container mx-auto text-sm text-gray-400">
             <p>&copy; 2025 3rd Brigade Headquarters. All Rights Reserved.</p>
@@ -146,294 +118,185 @@
         </div>
     </footer>
 
-    <!-- JavaScript for the Modal and Gallery Logic -->
     <script>
-        // Data structure for the galleries, organized by year and category
-        const galleryData = {
-            '2025': {
-                'Drilling': [{
-                    caption: 'Drill Exercise',
-                    src: 'uploaded:Dril1.png-74b20ed1-6c15-46f0-9475-88a6a9d23846'
-                }, {
-                    caption: 'Cadet Drill Exercise 2',
-                    src: 'uploaded:Dril2.png-069b6978-7660-4348-b7e2-78b462226e0f'
-                }, {
-                    caption: ' Drill Exercise 3',
-                    src: 'uploaded:Dril3.png-4be7a59e-8fc0-46dc-87ec-2c66f792ce10'
-                }, {
-                    caption: 'Drill Exercise 4',
-                    src: 'uploaded:Dril4.jpg-92fa73c4-e227-405e-98ae-6bc07634749b'
-                }, {
-                    caption: 'Drill Exercise 5',
-                    src: 'uploaded:Dril5.jpeg-a22bad88-65d9-48b6-9420-a53d23256a83'
-                }, {
-                    caption: 'Morning Jogging',
-                    src: 'uploaded:jog1.png-d3b43da3-3698-43a5-8618-ede80773937a'
-                }, {
-                    caption: 'Morning Jogging2',
-                    src: 'uploaded:jog2.png-be640a3e-a0f2-401c-ab72-ac16d640cae1'
-                },],
-
-                'Camp Fire': [{
-                    caption: 'Camp Fire Session',
-                    src: 'uploaded:C1.jpg-d505a2eb-e390-47ec-a110-fc015c8d64a0'
-                }, {
-                    caption: 'Camp Fire Session2',
-                    src: 'uploaded:C2.jpg-e374960a-12c8-4d64-a045-ff2d30b3d073'
-                }, {
-                    caption: 'Camp Fire Session3',
-                    src: 'uploaded:C3.jpg-c46b0843-d4ac-4294-82dc-3f938e7a7a87'
-                }, {
-                    caption: 'Camp Fire Session4',
-                    src: 'uploaded:C4.jpg-2bdc425d-90fc-4a2b-8cae-bdfec8c0ab41'
-                }, {
-                    caption: 'Camp Fire Session5',
-                    src: 'uploaded:C5.jpg-ea520ea1-ba61-4a01-b91a-4d6856294937'
-                }, {
-                    caption: 'Strategic Planning',
-                    src: 'uploaded:S1.jpg-ae0a2831-f287-43dd-83b0-53804e338389'
-                }, {
-                    caption: 'Strategic Planning2',
-                    src: 'uploaded:S2.jpg-8dd111a4-0219-4ad4-96ab-d49957949e6a'
-                }, {
-                    caption: 'Strategic Planning3',
-                    src: 'uploaded:S3.jpg-dd40b591-7d57-4573-96fb-9a73b9fdc394'
-                }, {
-                    caption: 'Strategic Planning4',
-                    src: 'uploaded:S4.png-c616ef0b-2e1a-4211-a268-bacc1f64dee3'
-                }, {
-                    caption: 'Strategic Planning5',
-                    src: 'uploaded:S5.png-ceb84bca-a17b-4f24-9eb0-3f053fe5a5ae'
-                },],
-                'Ceremonies': [{
-                    caption: 'Annual Parade',
-                    src: 'uploaded:P1.png-e218f6f4-23d9-4533-9e2c-40f0b5b5a3e8'
-                }, {
-                    caption: 'Annual Parade2',
-                    src: 'uploaded:P2.png-beab3267-c069-41b2-95b4-b747736f25a5'
-                }, {
-                    caption: 'Annual Parade3',
-                    src: 'uploaded:P3.png-e79e271e-8753-4318-98dc-0f894952abc9'
-                }, {
-                    caption: 'Annual Parade4',
-                    src: 'uploaded:P4.jpg-1c173e28-b260-4002-822c-836a9417e929'
-                }, {
-                    caption: 'Annual Parade5',
-                    src: 'uploaded:P5p.jpg-d4724df1-c098-4a27-9307-e21da193a83e'
-                }, {
-                    caption: 'Feeding',
-                    src: 'uploaded:F1.jpg-8842e77d-a5b0-4e16-9345-6e73f47303fa'
-                },],
-            },
-
-            '2024': {
-                'Field Training': [{
-                    caption: 'Tactical Field Training',
-                    src: 'https://placehold.co/600x400/36454F/ffffff?text=2024+Field+Training'
-                }, {
-                    caption: 'Endurance Expedition',
-                    src: 'https://placehold.co/600x400/36454F/ffffff?text=2024+Expedition'
-                },],
-                'Lectures': [{
-                    caption: 'First Aid Course',
-                    src: 'https://placehold.co/600x400/404040/ffffff?text=2024+Medical'
-                },],
-            },
-
-            '2023': {
-                'Competitions': [{
-                    caption: 'Inter-Brigade Competition',
-                    src: 'https://placehold.co/600x400/404040/ffffff?text=2023+Competition'
-                },],
-                'Expeditions': [{
-                    caption: 'Orienteering Exercise',
-                    src: 'https://placehold.co/600x400/1C2833/ffffff?text=2023+Orienteering'
-                },],
-            },
-
-            '2022': {
-                'Drilling': [{
-                    caption: 'Initial Recruit Training',
-                    src: 'https://placehold.co/600x400/505050/ffffff?text=2022+Recruits'
-                },],
-                'Barracks Life': [{
-                    caption: 'Daily Barracks Life',
-                    src: 'https://placehold.co/600x400/1C2833/ffffff?text=2022+Barracks'
-                },],
-            },
-
-            '2021': {
-                'Pandemic Drills': [{
-                    caption: 'COVID-19 Drills',
-                    src: 'https://placehold.co/600x400/000000/ffffff?text=2021+Drills'
-                },],
-            },
-
-            '2020': {
-                'Recruit Training': [{
-                    caption: 'Initial Recruit Training',
-                    src: 'https://placehold.co/600x400/505050/ffffff?text=2020+Recruits'
-                },],
-                'Ceremonies': [{
-                    caption: 'Senior Man Session',
-                    src: 'https://placehold.co/600x400/505050/ffffff?text=2020+Senior+Man'
-                },],
-            },
-        };
-
-        const imageModal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        const modalCaption = document.getElementById('modalCaption');
+        const API_ENDPOINT = window.location.origin + "/cadetportal/admin/api.php";
         const galleryGrid = document.getElementById('gallery-grid');
         const yearNav = document.getElementById('year-nav');
         const categoryNav = document.getElementById('category-nav');
         const loadingIndicator = document.getElementById('loading-indicator');
-        let currentYear = '2025';
 
-        /**
-         * Converts the 'uploaded:' format URL to a static 'img/' path.
-         * e.g., 'uploaded:Dril1.png-...' becomes 'img/Dril1.png'
-         * @param {string} imageUrl The source URL from the data structure.
-         * @returns {string} The usable image path.
-         */
-        function getUsableImagePath(imageUrl) {
-            if (imageUrl.startsWith('uploaded:')) {
-                const parts = imageUrl.substring('uploaded:'.length).split('-');
-                return 'img/' + parts[0];
-            }
-            return imageUrl;
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+        const closeModalBtn = document.getElementById('closeModal');
+        const prevImageBtn = document.getElementById('prevImage');
+        const nextImageBtn = document.getElementById('nextImage');
+
+        let galleryData = {};
+        let currentYear = null;
+        let currentImages = [];
+        let currentIndex = 0;
+
+        // Normalize image URLs: handle img folder or uploads
+        function normalizeUrl(rawUrl) {
+            if (!rawUrl) return rawPlaceholder();
+            if (/^https?:\/\//i.test(rawUrl)) return rawUrl;
+            const filename = rawUrl.split('/').pop();
+            // Prefer uploads folder if exists
+            const uploadsPath = window.location.origin + '/cadetportal/uploads/' + filename;
+            const imgPath = window.location.origin + '/cadetportal/img/' + filename;
+            // Check if uploads file exists by trying to load
+            return uploadsPath; // always point to uploads; if missing, onerror fallback will use placeholder
         }
 
-        // Function to render the category buttons for the selected year
-        function renderCategoryButtons(year) {
-            categoryNav.innerHTML = ''; // Clear old buttons
-            const categories = galleryData[year];
-            if (!categories) {
-                return;
-            }
+        function rawPlaceholder() {
+            return '/cadetportal/img/C1.jpg'; // fallback placeholder in img folder
+        }
 
-            // Add 'All' button to show all images for the year
+        async function loadCategories() {
+            try {
+                loadingIndicator.classList.remove('hidden');
+                const res = await fetch(`${API_ENDPOINT}?action=get_categories`, { credentials: 'same-origin' });
+                const data = await res.json();
+                if (!data || data.success === false) throw new Error((data && data.message) ? data.message : 'Failed to load categories');
+                galleryData = {}; yearNav.innerHTML = '';
+                data.data.forEach(yearObj => {
+                    const y = String(yearObj.year);
+                    galleryData[y] = {};
+                    (yearObj.subcategories || []).forEach(sub => {
+                        const images = (sub.images || []).map(img => ({
+                            id: img.id,
+                            title: img.title || img.filename || img.url.split('/').pop(),
+                            url: normalizeUrl(img.url)
+                        }));
+                        galleryData[y][sub.name] = images;
+                    });
+                    const btn = document.createElement('button');
+                    btn.id = `btn-${y}`;
+                    btn.textContent = y;
+                    btn.className = "px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md";
+                    btn.addEventListener('click', () => changeGallery(y));
+                    yearNav.appendChild(btn);
+                });
+                if (data.data.length > 0) changeGallery(String(data.data[0].year));
+                else galleryGrid.innerHTML = '<p class="text-center text-gray-400 col-span-full">No galleries available.</p>';
+            } catch (err) {
+                console.error('Error loading categories:', err);
+                galleryGrid.innerHTML = `<p class="text-center text-red-400 col-span-full">Error loading gallery: ${err.message}</p>`;
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        function renderCategoryButtons(year) {
+            categoryNav.innerHTML = '';
+            const categories = galleryData[year];
+            if (!categories) return;
             const allBtn = document.createElement('button');
             allBtn.textContent = 'All';
-            allBtn.id = `btn-all-${year}`;
             allBtn.className = 'px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md active-gallery';
-            allBtn.onclick = () => renderCategory(year, 'all');
+            allBtn.addEventListener('click', () => renderCategory(year, 'all'));
             categoryNav.appendChild(allBtn);
-
-            for (const category in categories) {
+            for (const cat in categories) {
                 const btn = document.createElement('button');
-                btn.textContent = category;
-                btn.id = `btn-${year}-${category.toLowerCase().replace(/\s/g, '-')}`;
+                btn.textContent = cat;
                 btn.className = 'px-6 py-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-full font-medium shadow-md';
-                btn.onclick = () => renderCategory(year, category);
+                btn.addEventListener('click', () => renderCategory(year, cat));
                 categoryNav.appendChild(btn);
             }
         }
 
-        // This helper function creates the image element
-        function createImageElement(image) {
-            const item = document.createElement('div');
-            item.className = 'relative group cursor-pointer overflow-hidden rounded-lg shadow-xl aspect-video';
-            item.setAttribute('onclick', 'openModal(this)');
-
-            const imageUrl = getUsableImagePath(image.src);
-
-            item.innerHTML = `
-                <img src="${imageUrl}" alt="${image.caption}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 rounded-lg"
-                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/1C2833/ffffff?text=Image+Unavailable';">
-                <div class="absolute inset-0 flex items-end p-3 bg-gradient-to-t from-gray-900/80 to-transparent">
-                    <p class="text-xs sm:text-sm font-semibold text-gray-200">${image.caption}</p>
-                </div>
-            `;
-            return item;
+        function createImageElement(image, index) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'gallery-card relative group cursor-pointer shadow-xl';
+            const img = document.createElement('img');
+            img.loading = 'lazy';
+            img.src = image.url || rawPlaceholder();
+            img.alt = image.title || '';
+            img.className = 'w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 rounded-lg';
+            img.onerror = function () { this.onerror = null; this.src = rawPlaceholder(); };
+            const overlay = document.createElement('div');
+            overlay.className = 'absolute inset-0 flex items-end p-3 bg-gradient-to-t from-gray-900/80 to-transparent rounded-lg';
+            const title = document.createElement('p');
+            title.className = 'text-xs sm:text-sm font-semibold text-gray-200';
+            title.textContent = image.title || '';
+            overlay.appendChild(title);
+            wrapper.appendChild(img);
+            wrapper.appendChild(overlay);
+            wrapper.addEventListener('click', () => openModal(index));
+            return wrapper;
         }
 
-        // Function to render images for a specific category
         function renderCategory(year, category) {
             galleryGrid.innerHTML = '';
-            loadingIndicator.classList.remove('hidden'); // Show loading indicator
-
-            // Simulate loading time for better UX
+            loadingIndicator.classList.remove('hidden');
             setTimeout(() => {
-                // Remove active state from all category buttons
-                const categoryButtons = categoryNav.querySelectorAll('button');
-                categoryButtons.forEach(btn => btn.classList.remove('active-gallery'));
-
-                let imagesToDisplay = [];
+                let images = [];
                 if (category === 'all') {
-                    // Collect all images from all categories for the year
-                    for (const cat in galleryData[year]) {
-                        imagesToDisplay = imagesToDisplay.concat(galleryData[year][cat]);
-                    }
-                    // Activate 'All' button
-                    const allButton = document.getElementById(`btn-all-${year}`);
-                    if (allButton) allButton.classList.add('active-gallery');
-
+                    for (const cat in galleryData[year]) images = images.concat(galleryData[year][cat]);
                 } else {
-                    // Display images for the specific category
-                    imagesToDisplay = galleryData[year][category];
-                    // Activate specific category button
-                    const categoryButton = document.getElementById(`btn-${year}-${category.toLowerCase().replace(/\s/g, '-')}`);
-                    if (categoryButton) categoryButton.classList.add('active-gallery');
+                    images = galleryData[year][category] || [];
                 }
-
-                if (!imagesToDisplay || imagesToDisplay.length === 0) {
-                    galleryGrid.innerHTML = '<p class="text-center text-gray-400 text-lg col-span-full">No content available for this category.</p>';
+                if (!images.length) {
+                    galleryGrid.innerHTML = '<p class="text-center text-gray-400 col-span-full">No images available.</p>';
+                    currentImages = [];
+                    currentIndex = 0;
                 } else {
-                    imagesToDisplay.forEach(image => {
-                        const item = createImageElement(image);
-                        galleryGrid.appendChild(item);
-                    });
+                    currentImages = images;
+                    currentIndex = 0;
+                    images.forEach((img, i) => galleryGrid.appendChild(createImageElement(img, i)));
                 }
-
-                loadingIndicator.classList.add('hidden'); // Hide loading indicator after rendering
-            }, 400); // 400ms delay
+                loadingIndicator.classList.add('hidden');
+            }, 150);
         }
 
-        // Function to handle year button clicks
         function changeGallery(year) {
             currentYear = year;
-            // Remove active state from all year buttons
-            const yearButtons = yearNav.querySelectorAll('button');
-            yearButtons.forEach(btn => btn.classList.remove('active-gallery'));
-
-            // Add active state to the clicked year button
-            const yearButton = document.getElementById(`btn-${year}`);
-            if (yearButton) yearButton.classList.add('active-gallery');
-
-            // Render the category buttons for the selected year and then render the 'All' category
+            yearNav.querySelectorAll('button').forEach(b => b.classList.remove('active-gallery'));
+            const ybtn = document.getElementById(`btn-${year}`);
+            if (ybtn) ybtn.classList.add('active-gallery');
             renderCategoryButtons(year);
             renderCategory(year, 'all');
         }
 
-        // Function to open the modal
-        function openModal(element) {
-            const image = element.querySelector('img');
-            const caption = element.querySelector('p');
-            modalImage.src = image.src;
-            modalImage.alt = image.alt;
-            modalCaption.textContent = caption.textContent;
+        function openModal(index) {
+            if (!currentImages.length) return;
+            currentIndex = index;
+            showImage();
             imageModal.classList.remove('hidden');
         }
 
-        // Function to close the modal
+        function showImage() {
+            const img = currentImages[currentIndex];
+            if (!img) return;
+            modalImage.src = img.url || rawPlaceholder();
+            modalCaption.textContent = img.title || '';
+        }
+
         function closeModal() {
             imageModal.classList.add('hidden');
         }
 
-        // Global Event Listener for Modal Closing on Escape Key
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                closeModal();
-            }
+        closeModalBtn.addEventListener('click', closeModal);
+        prevImageBtn.addEventListener('click', () => {
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+            showImage();
+        });
+        nextImageBtn.addEventListener('click', () => {
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            showImage();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (imageModal.classList.contains('hidden')) return;
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') prevImageBtn.click();sss
+            if (e.key === 'ArrowRight') nextImageBtn.click();
         });
 
-        // Initial load: show the 2025 gallery when the page first opens
-        document.addEventListener('DOMContentLoaded', () => {
-            changeGallery('2025');
-        });
+        document.addEventListener('DOMContentLoaded', loadCategories);
     </script>
-
 </body>
 
 </html>
