@@ -1,3 +1,7 @@
+<?php
+// PHP file for server-side processing, though the content is purely static HTML in this case.
+// This ensures consistency with the rest of the portal's file structure.
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -218,6 +222,19 @@
                         organizations (e.g., social media platforms, Google Maps). These external sites operate under
                         their own independent privacy directives. The Headquarters is not responsible for their data
                         collection practices.</p>
+
+                    <!-- **CRUCIAL ADDITION FOR MONETIZATION** -->
+                    <h4 class="text-xl font-semibold text-red-400 mt-6 mb-3 border-b border-gray-700 pb-1">4.A.
+                        Advertising Networks (Monetization)</h4>
+                    <p class="text-gray-300">The 3rd Brigade Headquarters Portal utilizes **Google AdSense** to display
+                        advertisements and generate revenue for platform sustainment. Google, as a third-party vendor,
+                        uses cookies (specifically the DoubleClick DART cookie) to serve ads based on a user's prior
+                        visits to this and other websites. These cookies allow Google and its partners to serve ads
+                        relevant to the user.</p>
+                    <p class="text-gray-300 mt-2">Users may opt-out of the use of the DART cookie by visiting the
+                        [**Google Ad and Content Network Privacy
+                        Policy**](https://policies.google.com/technologies/ads).</p>
+
                 </section>
 
                 <!-- Section 5: Rights and Contact -->
@@ -250,7 +267,8 @@
             <div><a href="contact.php">Contact Us</a></div>
             <div><a href="faqs.html">FAQs</a></div>
             <div><a href="gallery.html">Gallery</a></div>
-            <div><a href="privacy.html">Privacy Policy</a></div>
+            <div><a href="privacy_policy.php">Privacy Policy</a></div>
+            <div><a href="terms_of_use.php">Terms of Use</a></div>
             <div><a href="developer.html">About the Developer</a></div>
             <div><a href="https://www.facebook.com" target="_blank">Facebook</a></div>
             <div><a href="https://www.instagram.com" target="_blank">Instagram</a></div>

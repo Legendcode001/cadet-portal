@@ -23,6 +23,10 @@
 
 <body class="min-h-screen bg-gray-100 p-6">
     <div class="max-w-7xl mx-auto">
+        <nav class="mt-4 sm:mt-0 space-x-4">
+            <a href="dashboard.php"
+                class="text-gray-300 hover:text-white transition-colors duration-300 font-medium">Home</a>
+        </nav>
         <!-- Header -->
         <header class="bg-white p-6 rounded-xl shadow mb-8 flex items-center justify-between">
             <h1 class="text-2xl font-bold text-gray-900">📸 Image Manager</h1>

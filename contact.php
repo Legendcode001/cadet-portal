@@ -338,7 +338,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($honeypot_field)) {
             <div><a href="contact.php">Contact Us</a></div>
             <div><a href="faqs.html">FAQs</a></div>
             <div><a href="gallery.html">Gallery</a></div>
-            <div><a href="privacy.html">Privacy Policy</a></div>
+            <div><a href="privacy_policy.php">Privacy Policy</a></div>
+            <div><a href="terms_of_use.php">Terms of Use</a></div>
             <div><a href="developer.html">About the Developer</a></div>
             <div><a href="https://www.facebook.com" target="_blank">Facebook</a></div>
             <div><a href="https://www.instagram.com" target="_blank">Instagram</a></div>
